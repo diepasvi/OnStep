@@ -1,0 +1,62 @@
+PINES (ANTIGUOS PRIMERO)
+pinMode(14, OUTPUT); 	DIEGO-> PIN:14 Port: D6		// ENABLE MOTORS X, Y y Extruder
+
+pinMode(15, OUTPUT); 	DIEGO-> PIN:15 Port: D7		// STEP MOTOR 1 PORTE,6
+pinMode(21, OUTPUT); 	DIEGO-> PIN:21 Port: C5		// DIR MOTOR 1  PORTB,4
+pinMode(22, OUTPUT); 	DIEGO-> PIN:22 Port: C6		// STEP MOTOR 2 PORTD,6
+pinMode(23, OUTPUT); 	DIEGO-> PIN:23 Port: C7		// DIR MOTOR 2  PORTC,6
+
+pinMode(A0, INPUT); 								// WIFI CONFIG BUTTON => sensor imput
+pinMode(13, OUTPUT); 	DIEGO-> LED					// LED
+
+digitalWrite(A0, HIGH);		// Enable Pullup on A0
+digitalWrite(14, HIGH);		// Disbale motors
+
+
+PINES AXIS 1 Y 2:
+	ENABLE (BOTH)	-> D6 (PIN 14)
+
+	AXIS 1 (TIMER 1)
+	STEP 		-> D7 (PIN 15)
+	DIRECTION 	-> C5 (PIN 21)
+		TIMER		-> OCR1A = timer_period
+		ISR(TIMER1_COMPA_vect) -> FUNCION QUE DA EL PASO
+
+	AXIS 2 (TIMER 3)
+	STEP 		-> C6 (PIN 14)
+	DIRECTION 	-> C7 (PIN 23)
+		TIMER		-> OCR3A = timer_period
+		ISR(TIMER3_COMPA_vect) -> FUNCION QUE DA EL PASO
+
+TIMER IN ATMEGA1284p:
+TC0 -> 8BIT
+	Interrupt sources -> TOV0, OCF0A, and OCF0B
+TC2 -> 8BIT
+TC1 -> 16 BITS
+TC3 -> 16 BITS
+
+TCNT0 -> timer count for timer 0
+OCF0 -> flag que se activa cuando el counter llega al OCR (Output compare register)
+
+
+
+NodeMCU Serial passthrough
+	Serials del slider:
+	Serial.begin(115200);   // Serial output to console
+	Serial1.begin(9600); // Serial hacia el nodeMCU (pines hacia la pantalla LCD de la placa)
+
+	Pines DEL MCU para enviar/recibir hacia Creality manteniendo TX y DX para el monitor:
+	D3 ->	RX -> RECIBE DESDE EL DE ARRIBA DE LA CREALITY
+	D4 ->	TX -> ENVIA HACIA EL DE ABAJO DE LA CREALITY
+
+	Pines Serial1 de la Creality
+	Mirando el conector LCD (10 pines) abajo a la derecha:
+		XX
+		OX -> 0 -> LADO INFERIOR DEL CHIP (PRIMER PIN) TX 	-> CONECTAR CON D3 DEL NODEMCU
+		OX -> 0 -> LADO IZQUIERDO DEL CHIP (ULTIMO PIN) RX	-> CONECTAR CON D4 DEL NODEMCU
+		XX
+		XX -> EL DE LA DERECHA 5V (HACIA VIN DEL NODEMCU) Y EL DE LA IZQUIERDA HACIA GND DEL NODEMCU
+		
+	Para enviar por serial1 desde NODEMCU:
+	en setup() -> Serial1.begin(9600);
+	en el loop -> Serial1.printf("pingserialjejeje"); (envia por el puerto D4 del NodeMCU)
