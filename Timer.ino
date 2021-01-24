@@ -255,7 +255,7 @@ IRAM_ATTR ISR(TIMER3_COMPA_vect)
 #endif
 
 #if STEP_WAVE_FORM != DEDGE
-  a1CLEAR;
+  a1CLEAR;			//Este es el comando que mueve el motor
 #endif
 
 #if STEP_WAVE_FORM == SQUARE
@@ -305,7 +305,7 @@ IRAM_ATTR ISR(TIMER3_COMPA_vect)
     }
     clearAxis1=false;
   } else { 
-    if (takeStepAxis1) a1STEP;
+    if (takeStepAxis1) a1STEP;			//Este es el comando que mueve el motor
     clearAxis1=true;
 
 #if defined(AXIS1_DRIVER_CODE_GOTO)
@@ -316,9 +316,9 @@ IRAM_ATTR ISR(TIMER3_COMPA_vect)
 #else
 #if STEP_WAVE_FORM == DEDGE
     toggleStateAxis1++;
-    if (toggleStateAxis1%2 == 0) a1CLEAR; else a1STEP;
+    if (toggleStateAxis1%2 == 0) a1CLEAR; else a1STEP;			//Este es el comando que mueve el motor
 #else
-    a1STEP;
+    a1STEP;			//Este es el comando que mueve el motor
 #endif
   }
 #endif
@@ -442,7 +442,7 @@ double getFrequencyHzAxis2() {
     return (16000000.0/(double)isrTimerRateAxis2)*(double)timerDirAxis2;
 }
 
-#if AXIS2_DRIVER_POWER_DOWN == ON
+#if AXIS2_DRIVER_POWER_DOWN == ON && MOUNT_TYPE != ALTAZM
   // Auto power down the Dec motor
   void autoPowerDownAxis2() {
     static long Axis2PowerOffTimer = 0;

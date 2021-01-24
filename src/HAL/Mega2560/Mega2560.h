@@ -24,39 +24,12 @@
   #define MEGA2560_ARDUINO_SERIAL_ON
 #endif
 
-#ifndef MEGA2560_ARDUINO_SERIAL_ON
-  // SerialA is always enabled, SerialB and SerialC are optional
-  #define HAL_SERIAL_B_ENABLED       // Enable support for RX1/TX1
-
-  // don't enable serial C on a Classic board since pins are used
-  #if PINMAP != Classic && SERIAL_C_BAUD_DEFAULT != OFF
-    #define HAL_SERIAL_C_ENABLED
-    #if PINMAP != Rumba
-      #define HAL_SERIAL_C_SERIAL2   // Use RX2/TX2 for channel C (defaults to RX3/TX3 otherwise.)
-    #endif
-  #endif
-
-  // this tells OnStep that a .transmit() method needs to be called to send data
-  #define HAL_SERIAL_TRANSMIT
-
-  // Use low overhead serial
-  #include "HAL_Serial.h"
-#else
   // New symbols for the Serial ports so they can be remapped if necessary -----------------------------
   #define SerialA Serial
   // SerialA is always enabled, SerialB and SerialC are optional
   #define HAL_SERIAL_B_ENABLED
   #define SerialB Serial1
-  // don't enable serial C on a Classic board since pins are used
-  #if PINMAP != Classic
-    #define HAL_SERIAL_C_ENABLED
-    #if PINMAP == Rumba
-      #define SerialC Serial3
-    #else
-      #define SerialC Serial2
-    #endif
-  #endif
-#endif
+
 
 // New symbol for the default I2C port -------------------------------------------------------------
 #include <Wire.h>
@@ -105,14 +78,14 @@ void HAL_Init_Timer_Sidereal() {
 
 void HAL_Init_Timers_Motor() {
   // ~0 to 0.032 seconds (31 steps per second minimum, granularity of timer is 0.5uS) /8  pre-scaler
-  TCCR3B = (1 << WGM12) | (1 << CS11);
+  TCCR3B = (1 << WGM12) | (1 << CS11);		//cs11 -> PRESCALER /8; WGM12 ->  CTC mode (CLEAR TIMER ON COMPARE MATCH)
   TCCR3A = 0;
-  TIMSK3 = (1 << OCIE3A);
+  TIMSK3 = (1 << OCIE3A);					// timer compare interrupt enable -> Output Compare A Match Interrupt Enable A
 
   // ~0 to 0.032 seconds (31 steps per second minimum, granularity of timer is 0.5uS) /8  pre-scaler
-  TCCR4B = (1 << WGM12) | (1 << CS11);
-  TCCR4A = 0;
-  TIMSK4 = (1 << OCIE4A);
+  TCCR0B = (1 << WGM12) | (1 << CS11);		//cs11 -> PRESCALER /8; WGM12 ->  CTC mode (CLEAR TIMER ON COMPARE MATCH)
+  TCCR0A = 0;
+  TIMSK0 = (1 << OCIE0A);					// timer compare interrupt enable -> Output Compare A Match Interrupt Enable A
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -125,22 +98,22 @@ void Timer1SetInterval(long iv, double rateRatio) {
   TIMSK1 = 0;
 
   // set compare match register to desired timer count:
-  if (iv<65536) { TCCR1B |= (1 << CS10); } else {
+  if (iv<65536) { TCCR1B |= (1 << CS10); } else {								//NO PRESCALING
   iv=iv/8;
-  if (iv<65536) { TCCR1B |= (1 << CS11); } else {
+  if (iv<65536) { TCCR1B |= (1 << CS11); } else {								// PRESCALING -> /8
   iv=iv/8;
-  if (iv<65536) { TCCR1B |= (1 << CS10); TCCR1B |= (1 << CS11); } else {
+  if (iv<65536) { TCCR1B |= (1 << CS10); TCCR1B |= (1 << CS11); } else {		// PRESCALING -> /64
   iv=iv/4;  
-  if (iv<65536) { TCCR1B |= (1 << CS12); } else {
+  if (iv<65536) { TCCR1B |= (1 << CS12); } else {								// PRESCALING -> /256
   iv=iv/4;
-  if (iv<65536) { TCCR1B |= (1 << CS10); TCCR1B |= (1 << CS12); 
+  if (iv<65536) { TCCR1B |= (1 << CS10); TCCR1B |= (1 << CS12); 				//PRESCALING ->  /1024
   }}}}}
   
-  OCR1A = iv-1;
-  // CTC mode
+  OCR1A = iv-1;				//Define el Output Compare Register que lanzará la interrupción
+  // CTC mode -> CLEAR TIMER ON COMPARE MATCH
   TCCR1B |= (1 << WGM12);
-  // timer compare interrupt enable
-  TIMSK1 |= (1 << OCIE1A);
+  // timer compare interrupt enable -> Output Compare A Match Interrupt Enable A
+  TIMSK1 |= (1 << OCIE1A); 
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -168,7 +141,7 @@ void PresetTimerInterval(long iv, bool TPS, volatile uint32_t *nextRate, volatil
   
 // Must work from within the motor ISR timers, in tick units
 #define QuickSetIntervalAxis1(r) (OCR3A=r)
-#define QuickSetIntervalAxis2(r) (OCR4A=r)
+#define QuickSetIntervalAxis2(r) (OCR2A=r)
 
 // --------------------------------------------------------------------------------------------------
 // Fast port writing help, etc.
