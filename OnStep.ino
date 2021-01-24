@@ -80,17 +80,11 @@
   #define DL(x)
   #define DLF(x)
 #endif
-#if DEBUG == VERBOSE
+
   #define V(x)        DebugSer.print(x)
   #define VF(x)       DebugSer.print(F(x))
   #define VL(x)       DebugSer.println(x)
   #define VLF(x)      DebugSer.println(F(x))
-#else
-  #define V(x)
-  #define VF(x)
-  #define VL(x)
-  #define VLF(x)
-#endif
 // ---------------------------------------------------------------------------------------------------
 
 #include "src/lib/St4SerialMaster.h"
@@ -194,14 +188,15 @@ void setup() {
   // take a half-second to let any connected devices come up before we start setting up pins
   delay(500);
 
-#if DEBUG != OFF
+//#if DEBUG != OFF
   // initialize USB serial debugging early, so we can use DebugSer.print() for debugging, if needed
   DebugSer.begin(9600); delay(5000); DebugSer.flush(); VLF(""); VLF("");
-#endif
+//#endif
 
   // say hello
   VF("MSG: OnStep "); V(FirmwareVersionMajor); V("."); V(FirmwareVersionMinor); VL(FirmwareVersionPatch);
   VF("MSG: MCU =  "); VF(MCU_STR); V(", "); VF("Pinmap = "); VLF(PINMAP_STR);
+  VLF("MSG: El debug de diego ha empezado");
 
   // call hardware specific initialization
   VLF("MSG: Init HAL");

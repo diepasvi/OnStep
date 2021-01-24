@@ -22,7 +22,7 @@
 #define IRAM_ATTR
 #endif
 
-#if defined(__AVR_ATmega1280__)
+#if defined(__AVR_ATmega1284P__)
   #define MCU_STR "Mega1280"
   #include "Mega2560/Mega2560.h"
 
