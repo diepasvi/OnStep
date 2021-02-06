@@ -1,8 +1,8 @@
 
 // This configuration was automatically generated using the Online Configuration Generator
 // Authored by: Khalid Baheyeldin
-// Slewing Speed: 4.51 degrees/second (estimated)
-// Generated on: 2020-12-31 05:26
+// Slewing Speed: 9.01 degrees/second (estimated)
+// Generated on: 2021-02-06 08:56
 // ---------------------------------------------------------------------------------------------------------------------------------
 // Configuration for OnStep
 
@@ -40,11 +40,11 @@
 #define LED_STATUS                     ON //     ON, Blinks w/sidereal tracking otherwise steady on indicates activity.       Option
 #define LED_STATUS2                   OFF //    OFF, ON Blinks 1s interval w/PPS sync, steady for gotos, off if in standby.   Option
 #define LED_RETICLE                   OFF //    OFF, n. Where n=0..255 (0..100%) activates feature sets default brightness.   Option
-#define BUZZER                        OFF //    OFF, ON, n. Where n=100..6000 (Hz freq.) for piezo speaker. ON for buzzer.    Option
+#define BUZZER                        ON //    OFF, ON, n. Where n=100..6000 (Hz freq.) for piezo speaker. ON for buzzer.    Option
 #define BUZZER_STATE_DEFAULT          ON  //    OFF, ON Start with piezo buzzer/speaker enabled.                              Option
 
 // TIME AND LOCATION -------------------------------------------------- see https://onstep.groups.io/g/main/wiki/6-Configuration#TLS
-#define TIME_LOCATION_SOURCE          OFF //    OFF, DS3231 (I2c,) DS3234 (Spi,) TEENSY (T3.2 internal,) or GPS source.       Option
+#define TIME_LOCATION_SOURCE          DS3231 //    OFF, DS3231 (I2c,) DS3234 (Spi,) TEENSY (T3.2 internal,) or GPS source.       Option
                                           //         Provides Date/Time, and if available, PPS & Lat/Long also.
 #define SerialGPS                     Serial3
 #define SerialGPSBaud                 9600
@@ -67,7 +67,7 @@
 #define PEC_SENSE_STATE              HIGH //   HIGH, Senses the PEC signal rising edge or use LOW for falling edge.           Adjust
                                           //         Ignored in ALTAZM mode.
 
-#define PPS_SENSE                     OFF //    OFF, ON* enables PPS (pulse per second,) senses signal rising edge.           Option
+#define PPS_SENSE                     ON //    OFF, ON* enables PPS (pulse per second,) senses signal rising edge.           Option
                                           //         Better tracking accuracy especially for Mega2560's w/ceramic resonator.
 
 // ST4 INTERFACE ------------------------------------------------------ see https://onstep.groups.io/g/main/wiki/6-Configuration#ST4
@@ -80,7 +80,7 @@
 #define ST4_HAND_CONTROL_FOCUSER      OFF //    OFF, ON alternate to above: Focuser move [E]f1 [W]f2 [N]-     [S]+            Option
 
 // GUIDING BEHAVIOR ----------------------------------------------- see https://onstep.groups.io/g/main/wiki/6-Configuration#GUIDING
-#define GUIDE_TIME_LIMIT                0 //      0, No guide time limit. Or n. Where n=1..120 second time limit guard.       Adjust
+#define GUIDE_TIME_LIMIT               20 //      0, No guide time limit. Or n. Where n=1..120 second time limit guard.       Adjust
 #define GUIDE_DISABLE_BACKLASH        OFF //    OFF, Disable backlash takeup during guiding at <= 1X                          Option
 
 // TRACKING BEHAVIOUR -------------------------------------------- see https://onstep.groups.io/g/main/wiki/6-Configuration#TRACKING
@@ -125,7 +125,7 @@
 
 #define AXIS1_DRIVER_MODEL            LV8729 //    OFF, (See above.) Stepper driver model.                                      <-Often
 #define AXIS1_DRIVER_MICROSTEPS       32 //    OFF, n. Microstep mode when tracking.                                        <-Often
-#define AXIS1_DRIVER_MICROSTEPS_GOTO  8 //    OFF, n. Microstep mode used during gotos.                                     Option
+#define AXIS1_DRIVER_MICROSTEPS_GOTO  4 //    OFF, n. Microstep mode used during gotos.                                     Option
 #define AXIS1_DRIVER_IHOLD            OFF //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
 #define AXIS1_DRIVER_IRUN             OFF //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
 #define AXIS1_DRIVER_IGOTO            OFF //    OFF, n, (mA.) Current during slews. OFF uses same as IRUN.                    Option
@@ -142,7 +142,7 @@
 
 #define AXIS2_DRIVER_MODEL            LV8729 //    OFF, (See above.) Stepper driver model.                                      <-Often
 #define AXIS2_DRIVER_MICROSTEPS       32 //    OFF, n. Microstep mode when tracking.                                        <-Often
-#define AXIS2_DRIVER_MICROSTEPS_GOTO  8 //    OFF, n. Microstep mode used during gotos.                                     Option
+#define AXIS2_DRIVER_MICROSTEPS_GOTO  4 //    OFF, n. Microstep mode used during gotos.                                     Option
 #define AXIS2_DRIVER_IHOLD            OFF //    OFF, n, (mA.) Current during standstill. OFF uses IRUN/2.0                    Option
 #define AXIS2_DRIVER_IRUN             OFF //    OFF, n, (mA.) Current during tracking, appropriate for stepper/driver/etc.    Option
 #define AXIS2_DRIVER_IGOTO            OFF //    OFF, n, (mA.) Current during slews. OFF uses same as IRUN.                    Option
@@ -173,8 +173,8 @@
 
 // AXIS4 FOCUSER 1
 // see https://onstep.groups.io/g/main/wiki/6-Configuration#AXIS4
-#define FOCUSER1                      OFF //    OFF, ON to enable this focuser.                                               Option
-#define AXIS4_STEPS_PER_MICRON        0.5 //    0.5, n. Steps per micrometer. Figure this out by testing or other means.      Adjust
+#define FOCUSER1                      ON  //    OFF, ON to enable this focuser.                                               Option
+#define AXIS4_STEPS_PER_MICRON        2.07//    0.5, n. Steps per micrometer. Figure this out by testing or other means.      Adjust
 #define AXIS4_STEP_RATE_MAX           8.0 //    8.0, n, (millisec.) Min. ms/step depends on processor. In DC mode, PWM freq.  Adjust
 
 #define AXIS4_DRIVER_MODEL            OFF //    OFF, TMC2130, TMC5160. Leave OFF for all drivers models except these.         Option
@@ -187,7 +187,7 @@
 
 #define AXIS4_LIMIT_MIN_RATE           10 //     10, n. Where n=1..1000 (um/s.) Minimum microns/second. In DC mode, min pwr.  Adjust
 #define AXIS4_LIMIT_MIN                 0 //      0, n. Where n=0..500 (millimeters.) Minimum allowed position.               Adjust
-#define AXIS4_LIMIT_MAX                50 //     50, n. Where n=0..500 (millimeters.) Maximum allowed position.               Adjust
+#define AXIS4_LIMIT_MAX                37 //     50, n. Where n=0..500 (millimeters.) Maximum allowed position.               Adjust
 
 // AXIS5 FOCUSER 2
 // see https://onstep.groups.io/g/main/wiki/6-Configuration#AXIS5
