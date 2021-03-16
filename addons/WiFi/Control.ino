@@ -3,13 +3,13 @@
 
 const char html_controlScript1[] PROGMEM =
 "<script>\n"
-"function s(key,v1) {\n"
-  "var xhttp = new XMLHttpRequest();\n"
-  "xhttp.open('GET', 'controlA.txt?'+key+'='+v1+'&x='+new Date().getTime(), true);\n"
-  "xhttp.send();\n"
-"}\n"
-"function g(v1){s('dr',v1);}\n"
-"function gf(v1){s('dr',v1);autoFastRun();}\n"
+"function s(key,v1) {"
+  "var xhttp = new XMLHttpRequest();"
+  "xhttp.open('GET', 'controlA.txt?'+key+'='+v1+'&x='+new Date().getTime(), true);"
+  "xhttp.send();"
+"}"
+"function g(v1){s('dr',v1);}"
+"function gf(v1){s('dr',v1);autoFastRun();}"
 "function sf(key,v1){s(key,v1);autoFastRun();}\n"
 "</script>\n";
 
@@ -131,7 +131,7 @@ const char html_controlRotate1[] PROGMEM =
 "<button class='bbh' style='height: 2.1em' onpointerdown=\"gf('rh')\" title='" L_HINT_ROT_FIND_HOME "' type='button'>" ARROW_DR HOME_CH "</button>"
 "<button class='bbh' style='height: 2.1em' onpointerdown=\"if (confirm('" L_ARE_YOU_SURE "?')) gf('rH')\" title='" L_HINT_ROT_RESET_HOME "' type='button'>" CAUTION_CH HOME_CH "</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 const char html_controlRotate2[] PROGMEM =
-"<button class='bbh' style='height: 2.1em' onpointerdown=\"gf('rR')\" onpointerup=\"g('rq')\" type='button'>" ARROW_LL "</button>"
+"<button class='bbh' style='height: 2.1em' onpointerdown=\"gf('rB')\" onpointerup=\"g('rq')\" type='button'>" ARROW_LL "</button>"
 "<button class='bbh' style='width: 2em' onpointerdown=\"gf('rr')\" onpointerup=\"g('rq')\" type='button'>" ARROW_L "</button>";
 const char html_controlRotate3[] PROGMEM =
 "<button class='bbh' style='width: 2em' onpointerdown=\"gf('rf')\" onpointerup=\"g('rq')\" type='button'>" ARROW_R "</button>"
@@ -477,7 +477,7 @@ void processControlGet() {
   if (v!="") {
     if ( (atoi2((char *)v.c_str(),&i)) && ((i>=2016) && (i<=9999))) {
       get_temp_year=i-2000;
-      char temp[10];
+      char temp[20];
       sprintf(temp,":SC%02d/%02d/%02d#",get_temp_month,get_temp_day,get_temp_year);
       commandBool(temp);
     }
@@ -494,7 +494,7 @@ void processControlGet() {
   if (v!="") {
     if ( (atoi2((char *)v.c_str(),&i)) && ((i>=0) && (i<=59))) {
       get_temp_second=i;
-      char temp[10];
+      char temp[20];
       sprintf(temp,":SL%02d:%02d:%02d#",get_temp_hour,get_temp_minute,get_temp_second);
       commandBool(temp);
     }
@@ -554,7 +554,7 @@ void processControlGet() {
     if (v=="Fq") commandBlind(":FQ#");
    
     // Rotate/De-Rotate
-    if (v=="rR") commandBlind(":r3#:rc#:r<#"); // rate 3, move ccw
+    if (v=="rB") commandBlind(":r3#:rc#:r<#"); // rate 3, move ccw
     if (v=="rr") commandBlind(":r1#:rc#:r<#"); // rate 1, move ccw
     if (v=="rf") commandBlind(":r1#:rc#:r>#"); // rate 1, move cw
     if (v=="rF") commandBlind(":r3#:rc#:r>#"); // rate 3, move cw

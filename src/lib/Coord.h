@@ -44,6 +44,40 @@ void setIndexAxis1(double axis1, int newPierSide) {
   indexAxis1Steps=(long)(indexAxis1*axis1Settings.stepsPerMeasure);
 }
 
+void nullIndexAxis1() {
+  long u=360*axis1Settings.stepsPerMeasure;
+  long t=180*axis1Settings.stepsPerMeasure;
+
+  cli();
+  
+  // temporiarily incorporate steps taken in backlash for true motor step count
+  posAxis1+=blAxis1;
+
+  // remember where we are in the driver step sequence
+  long m=posAxis1%1024;
+
+  // incorporate index into motor coordinate
+  posAxis1          +=indexAxis1Steps;
+  targetAxis1.part.m+=indexAxis1Steps;
+
+  // bring motor coordinate back into +/- 180 degree range
+  long p1=posAxis1;
+  if (p1 >  t) { posAxis1-=u; targetAxis1.part.m-=u; p1=posAxis1; } else
+  if (p1 < -t) { posAxis1+=u; targetAxis1.part.m+=u; p1=posAxis1; }
+
+  // restore where we are in the driver step sequence
+  posAxis1          -= (posAxis1%1024)-m;
+  targetAxis1.part.m-= (posAxis1%1024)-m;
+  
+  indexAxis1Steps    = (posAxis1%1024)-m;
+  indexAxis1=indexAxis1Steps/axis1Settings.stepsPerMeasure;
+
+  // remove steps taken in backlash, back to true shaft angle
+  posAxis1-=blAxis1;
+
+  sei();
+}
+
 void setIndexAxis2(double axis2, int newPierSide) {
   if (latitude >= 0) { if (newPierSide == PierSideWest) axis2=180.0-axis2; } else { if (newPierSide == PierSideWest) axis2=-180.0-axis2; }
   if (axis2 > 360.0) axis2-=360.0; if (axis2 < -360.0) axis2+=360.0;

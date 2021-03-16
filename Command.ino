@@ -277,14 +277,16 @@ void processCommands() {
 
 //  E - Enter special mode
       if (command[0] == 'E') {
-#if DEBUG != OFF
-// :EC[s]# Echo string [c] on SerialA.
+// :EC[s]# Echo string [c] on DebugSer.
 //            Return: Nothing
         if (command[1] == 'C') {
-          SerialA.println(parameter);
+          // spaces are encoded as '_'
+          for (unsigned int i=0; i < strlen(parameter); i++) if (parameter[i]=='_') parameter[i]=' ';
+          // a newline is encoded as '&' in the last char of message
+          int l=strlen(parameter);
+          if (l > 0 && parameter[l-1] == '&') { parameter[l-1]=0; DL(parameter); } else D(parameter);
           boolReply=false;
         } else
-#endif
 // :ENVRESET# Wipe flash.  OnStep must be at home and tracking turned off for this command to work.
         if (command[1] == 'N' && parameter[0] == 'V' && parameter[1] == 'R' && parameter[2] == 'E' && parameter[3] == 'S' && parameter[4] == 'E' && parameter[5] == 'T' && parameter[6] == 0) {
           if (atHome || parkStatus == Parked) {
@@ -435,7 +437,7 @@ void processCommands() {
         if (command[1] == 'F') { foc->setMoveRate(1000); boolReply=false; } else
 // :FS#       Set focuser for slow motion (0.01mm/s)
 //            Returns: Nothing
-        if (command[1] == 'S' && parameter[0] == 0) { foc->setMoveRate(1); boolReply=false; } else
+        if (command[1] == 'S' && parameter[0] == 0) { foc->setMoveRate(10); boolReply=false; } else
 // :F[n]#     Set focuser move rate, where n = 1 for finest, 2 for 0.01mm/second, 3 for 0.1mm/second, 4 for 1mm/second
 //            Returns: Nothing
         if (command[1] >= '1' && command[1] <= '4') { int p[] = {1,10,100,1000}; foc->setMoveRate(p[command[1] - '1']); boolReply=false; } else
@@ -949,7 +951,7 @@ void processCommands() {
                   if (p == 0 || p == 1 || (p == 2 && ROTATOR == ON) || (p == 3 && FOCUSER1 == ON) || (p == 4 && FOCUSER2 == ON)) {
                     axisSettings axis;
                     nv.readBytes(EE_settingsAxis1+(p*17),(byte*)&axis,sizeof(axis));
-                    sprintf(reply,"%ld.%03d,%d,%d,%d,%d,%d",(long)axis.stepsPerMeasure,(int)(axis.stepsPerMeasure*1000)%1000,axis.microsteps,axis.IRUN,axis.reverse,axis.min,axis.max);
+                    sprintf(reply,"%ld.%03ld,%d,%d,%d,%d,%d",(long)axis.stepsPerMeasure,(long)(axis.stepsPerMeasure*1000)%1000,axis.microsteps,axis.IRUN,axis.reverse,axis.min,axis.max);
                     boolReply=false;
                   } else commandError=CE_0;
                 } else commandError=CE_0;
